@@ -17,13 +17,20 @@ else:
   Repo.clone_from(repo_url, clone_folder)
 
 ports_path = clone_path / 'ports'
-ports_list = os.listdir(ports_path)
+ports_folders = os.listdir(ports_path)
 
-dependencies = []
-for dep in ports_list:
-  dependencies.append({"name": dep})
+libraries = []
 
-json_str = json.dumps(dependencies, indent = 2)
-json_file = open(libraries_filename, 'w')
+for folder in ports_folders:
+  pth = ports_path / folder / 'vcpkg.json'
+  file = open(pth, encoding = 'utf8')
+  dep_json = json.load(file)
+  libraries.append(dep_json)
+  file.close()
+  dep_json = None
+  print(folder)
+
+json_str = json.dumps(libraries, indent = 2)
+json_file = open(libraries_filename, 'w', encoding = 'utf8')
 json_file.write(json_str)
 json_file.close()
